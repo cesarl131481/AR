@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>MindAR.js - Ejemplo básico</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- A-Frame + MindAR.js desde CDN -->
+    <script src="https://aframe.io/releases/1.4.2/aframe.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/mind-ar/dist/mindar-image-aframe.prod.js"></script>
+  </head>
+
+  <body>
+    <!-- Escena de A-Frame con MindAR -->
+    <a-scene
+      mindar-image="imageTargetSrc: ./targets.mind;"
+      color-space="sRGB"
+      embedded
+      vr-mode-ui="enabled: false"
+      device-orientation-permission-ui="enabled: false">
+
+      <!-- Cámara de AR -->
+      <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
+
+      <!-- Contenido que aparece cuando se detecta la imagen -->
+      <a-entity mindar-image-target="targetIndex: 0">
+        <a-box position="0 0.5 0" color="tomato" animation="property: rotation; to: 0 360 0; loop: true; dur: 3000"></a-box>
+      </a-entity>
+    </a-scene>
+  </body>
+</html>
