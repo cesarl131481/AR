@@ -1,30 +1,110 @@
 <!DOCTYPE html>
-<html>
-  <head>
-    <title>MindAR.js - Ejemplo básico</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <title>MindAR - Cubo con botón</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-    <!-- A-Frame + MindAR.js desde CDN -->
-    <script src="https://aframe.io/releases/1.4.2/aframe.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/mind-ar/dist/mindar-image-aframe.prod.js"></script>
-  </head>
+  <!-- A-Frame -->
+  <script src="https://aframe.io/releases/1.4.2/aframe.min.js"></script>
+  <!-- MindAR -->
+  <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.4/dist/mindar-image-aframe.prod.js"></script>
 
-  <body>
-    <!-- Escena de A-Frame con MindAR -->
-    <a-scene
-      mindar-image="imageTargetSrc: ./targets.mind;"
-      color-space="sRGB"
-      embedded
-      vr-mode-ui="enabled: false"
-      device-orientation-permission-ui="enabled: false">
+  <style>
+    html, body { margin: 0; height: 100%; overflow: hidden; background: black; }
+    #hint {
+      position: absolute;
+      left: 8px;
+      top: 8px;
+      z-index: 10;
+      color: white;
+      font-family: Arial, sans-serif;
+      background: rgba(0,0,0,0.5);
+      padding: 6px 10px;
+      border-radius: 6px;
+    }
+    #toggleBtn {
+      position: absolute;
+      bottom: 15px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 20;
+      background-color: #2196f3;
+      color: white;
+      border: none;
+      padding: 10px 16px;
+      border-radius: 8px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+    #toggleBtn:hover {
+      background-color: #1976d2;
+    }
+  </style>
+</head>
+<body>
+  <div id="hint">Apunta la cámara al target</div>
+  <button id="toggleBtn">Iniciar rotación</button>
 
-      <!-- Cámara de AR -->
-      <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
+  <!-- Escena AR -->
+  <a-scene
+    mindar-image="imageTargetSrc: ./targets.mind;"
+    embedded
+    color-space="sRGB"
+    vr-mode-ui="enabled: false"
+    device-orientation-permission-ui="enabled: false">
 
-      <!-- Contenido que aparece cuando se detecta la imagen -->
-      <a-entity mindar-image-target="targetIndex: 0">
-        <a-box position="0 0.5 0" color="tomato" animation="property: rotation; to: 0 360 0; loop: true; dur: 3000"></a-box>
-      </a-entity>
-    </a-scene>
-  </body>
+    <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
+
+    <a-entity id="marker" mindar-image-target="targetIndex: 0">
+      <a-box id="cube"
+             position="0 0 0"
+             rotation="0 45 0"
+             scale="0.3 0.3 0.3"
+             color="#ff5722">
+      </a-box>
+      <a-text value="¡Cubo AR!" position="0 0.55 0" align="center" color="#ffffff" scale="0.5 0.5 0.5"></a-text>
+    </a-entity>
+
+  </a-scene>
+
+  <script>
+    const cube = document.querySelector('#cube');
+    const marker = document.querySelector('#marker');
+    const hint = document.querySelector('#hint');
+    const btn = document.querySelector('#toggleBtn');
+
+    let isRotating = false;
+
+    // Evento: target detectado
+    marker.addEventListener('targetFound', () => {
+      hint.textContent = 'Target detectado — puedes iniciar la rotación.';
+    });
+
+    // Evento: target perdido
+    marker.addEventListener('targetLost', () => {
+      hint.textContent = 'Apunta la cámara al target.';
+    });
+
+    // Evento: click del botón
+    btn.addEventListener('click', () => {
+      if (!isRotating) {
+        cube.setAttribute('animation', {
+          property: 'rotation',
+          to: '0 405 0',
+          loop: true,
+          dur: 3000
+        });
+        btn.textContent = 'Detener rotación';
+        isRotating = true;
+      } else {
+        cube.removeAttribute('animation');
+        btn.textContent = 'Iniciar rotación';
+        isRotating = false;
+      }
+    });
+  </script>
+</body>
 </html>
+
+
