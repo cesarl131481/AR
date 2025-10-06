@@ -2,22 +2,19 @@
 <html lang="es">
 <head>
   <meta charset="utf-8" />
-  <title>MindAR - Cubo sobre imagen</title>
+  <title>AR con MindAR - Cubo sobre imagen</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-  <!-- A-Frame -->
+  <!-- Librerías -->
   <script src="https://aframe.io/releases/1.4.2/aframe.min.js"></script>
-  <!-- MindAR para A-Frame (versión empaquetada) -->
   <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.4/dist/mindar-image-aframe.prod.js"></script>
 
   <style>
-    html, body { margin: 0; height: 100%; overflow: hidden; }
+    html, body { margin: 0; height: 100%; overflow: hidden; background: #000; }
     #hint {
       position: absolute;
-      left: 8px;
-      top: 8px;
-      z-index: 10;
-      color: white;
+      left: 8px; top: 8px;
+      z-index: 10; color: white;
       font-family: Arial, sans-serif;
       background: rgba(0,0,0,0.4);
       padding: 6px 10px;
@@ -26,55 +23,47 @@
   </style>
 </head>
 <body>
-  <div id="hint">Apunta la cámara a la imagen target (genera <code>targets.mind</code> primero).</div>
+  <div id="hint">Apunta la cámara a la imagen target (asegúrate de permitir cámara).</div>
 
-  <!-- Escena de A-Frame con MindAR -->
   <a-scene
     mindar-image="imageTargetSrc: ./targets.mind;"
-    vr-mode-ui="enabled: false"
-    device-orientation-permission-ui="enabled: false"
+    color-space="sRGB"
     embedded
-    color-space="sRGB">
+    vr-mode-ui="enabled: false"
+    device-orientation-permission-ui="enabled: false">
 
-    <!-- Cámara AR -->
+    <!-- Luces -->
+    <a-entity light="type: ambient; intensity: 1"></a-entity>
+    <a-entity light="type: directional; intensity: 0.8" position="1 1 1"></a-entity>
+
+    <!-- Cámara -->
     <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
 
-    <!-- Entidad que actúa cuando se detecta el target 0 -->
+    <!-- Target -->
     <a-entity id="marker" mindar-image-target="targetIndex: 0">
-
-      <!-- Cubo visible solo cuando el marker está presente -->
       <a-box id="cube"
              position="0 0 0"
-             rotation="0 45 0"
              scale="0.3 0.3 0.3"
-             material="color: #ff5722; metalness: 0.2; roughness: 0.6"
-             animation="property: rotation; to: 0 405 0; loop: true; dur: 4000">
+             material="color: orange; metalness: 0.2; roughness: 0.5"
+             rotation="0 0 0">
       </a-box>
-
-      <!-- Texto sobre el cubo -->
-      <a-text value="¡Objeto AR!" position="0 0.55 0" align="center" color="#ffffff" scale="0.5 0.5 0.5"></a-text>
+      <a-text value="¡Hola AR!" position="0 0.5 0" align="center" color="#fff"></a-text>
     </a-entity>
-
   </a-scene>
 
-  <!-- Scripts de ayuda (listeners para depurar) -->
   <script>
     const marker = document.querySelector('#marker');
+    const cube = document.querySelector('#cube');
+
     marker.addEventListener('targetFound', () => {
-      console.log('TARGET_encontrado');
-      document.getElementById('hint').textContent = 'Target detectado — ¡mira el cubo!';
-    });
-    marker.addEventListener('targetLost', () => {
-      console.log('TARGET_perdido');
-      document.getElementById('hint').textContent = 'Apunta la cámara a la imagen target.';
+      console.log('Target encontrado');
+      document.getElementById('hint').textContent = 'Imagen detectada — ¡Cubo visible!';
     });
 
-    // Mensajes globales para ver si MindAR inicializa
-    document.querySelector('a-scene').addEventListener('renderstart', () => {
-      console.log('A-SCENE renderstart (AR inicializado)');
+    marker.addEventListener('targetLost', () => {
+      console.log('Target perdido');
+      document.getElementById('hint').textContent = 'Apunta la cámara al target.';
     });
   </script>
 </body>
 </html>
-
-
