@@ -23,6 +23,15 @@
                 justify-content: center; font-size: 24px; z-index: 10;
                 }
         </style>
+        <script>
+            function fixViewportHeight() {
+                const vh = window.innerHeight * 0.01;
+                document.documentElement.style.setProperty('--vh', `${vh}px`);
+            }
+            window.addEventListener('resize', fixViewportHeight);
+            window.addEventListener('orientationchange', fixViewportHeight);
+            window.addEventListener('load', fixViewportHeight);
+        </script>
 
     </head>
     <body>
