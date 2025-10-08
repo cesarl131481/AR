@@ -1,52 +1,55 @@
 <!DOCTYPE html>
 <html lang="es">
-    <head>
-        <meta charset="UFT-8"/>
-        <!--Permite adaptrase al tamaño en pantalla-->>
-        <meta name = "viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" /> 
-        <title>PRUEBA 1: 2 Marcadores</title>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Cámara con A-Frame</title>
+    <script src="https://aframe.io/releases/1.5.0/aframe.min.js"></script>
 
-        <!-- Librerías para AR-->
-        <script src="https://cdn.jsdelivr.net/npm/aframe@1.4.2/dist/aframe.min.js"></script>
-        <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.5/dist/mindar-image-aframe.prod.js"></script>
-        <!--Estilo visual (CSS)-->
-        <style>
-            body { margin: 0; padding: 0; width: 100%;height: 100%; overflow: hidden; background-color: blank;}
-            a-scene{
-                position: fixed !important;
-                top: 0; left: 0; width: 100vw !important; height: 100vh !important;
-            }
-            
-            #loading { 
-                position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
-                background: #000; color: white; display: flex; align-items: center; 
-                justify-content: center; font-size: 24px; z-index: 999;
-                }
-        </style>
-        <script>
-            function fixViewportHeight() {
-                const vh = window.innerHeight * 0.01;
-                document.documentElement.style.setProperty('--vh', `${vh}px`);
-            }
-            window.addEventListener('resize', fixViewportHeight);
-            window.addEventListener('orientationchange', fixViewportHeight);
-            window.addEventListener('load', fixViewportHeight);
-        </script>
+    <style>
+      html, body {
+        margin: 0;
+        padding: 0;
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+        background: black;
+      }
 
-    </head>
-    <body>
-        <div id="loading">Cargando cámara...</div>
-        <a-scene
-            color-space="sRGB"
-            embedded
-            renderer="colorManagement: true, physicallyCorrectLights"
-            vr-mode-ui="enabled: false"
-            device-orientation-permission-ui="enabled: false"
-            style="width: 100vw; height: calc(var(--vh, 1vh) * 100); position: fixed; top: 0; left: 0;"
-            >
-            <a-camera position="0 0 0"></a-camera>
-        </a-scene> 
-        <script src="main.js"></script>
-    </body>
+      video {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        object-fit: cover;
+        z-index: -1;
+      }
+    </style>
+  </head>
 
+  <body>
+    <video id="fondo" autoplay playsinline muted></video>
+
+    <a-scene embedded vr-mode-ui="enabled: false">
+      <a-entity camera position="0 0 0"></a-entity>
+    </a-scene>
+
+    <script>
+      const fondo = document.getElementById("fondo");
+
+      async function iniciarCamara() {
+        try {
+          const stream = await navigator.mediaDevices.getUserMedia({
+            video: { facingMode: "environment" }
+          });
+          fondo.srcObject = stream;
+        } catch (err) {
+          alert("Error al acceder a la cámara: " + err.message);
+        }
+      }
+
+      iniciarCamara();
+    </script>
+  </body>
 </html>
