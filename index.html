@@ -3,7 +3,9 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Cámara sin VR</title>
+    <title>Cámara sin VR ni fondo negro</title>
+
+    <!-- Librería A-Frame -->
     <script src="https://aframe.io/releases/1.5.0/aframe.min.js"></script>
 
     <style>
@@ -16,37 +18,50 @@
         background: black;
       }
 
-      video {
-        position: absolute;
+      /* Video de fondo */
+      #fondo {
+        position: fixed;
         top: 0;
         left: 0;
         width: 100vw;
         height: 100vh;
         object-fit: cover;
-        z-index: -1;
+        z-index: 0;
+      }
+
+      /* Escena sobre el video, sin fondo negro */
+      a-scene {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        z-index: 1;
+        background-color: transparent !important; /* 🔥 clave para que no tape el video */
       }
     </style>
   </head>
 
   <body>
+    <!-- Video de cámara -->
     <video id="fondo" autoplay playsinline muted></video>
 
-    <!-- Escena A-Frame sin VR ni botón -->
-    <a-scene embedded vr-mode-ui="enabled: false">
+    <!-- Escena A-Frame sin VR -->
+    <a-scene embedded vr-mode-ui="enabled: false" renderer="alpha: true;">
       <a-entity camera position="0 0 0"></a-entity>
     </a-scene>
 
     <script>
-      const fondo = document.getElementById("fondo");
+      const video = document.getElementById("fondo");
 
       async function iniciarCamara() {
         try {
           const stream = await navigator.mediaDevices.getUserMedia({
             video: { facingMode: "environment" }
           });
-          fondo.srcObject = stream;
-        } catch (err) {
-          alert("Error al acceder a la cámara: " + err.message);
+          video.srcObject = stream;
+        } catch (error) {
+          alert("Error al acceder a la cámara: " + error.message);
         }
       }
 
