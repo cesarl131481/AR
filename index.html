@@ -1,69 +1,41 @@
 <!DOCTYPE html>
 <html lang="es">
-<head>
-  <meta charset="utf-8" />
-  <title>AR con MindAR - Cubo sobre imagen</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <head>
+        <meta charset="UFT-8"/>
+        <!--Permite adaptrase al tamaño en pantalla-->>
+        <meta name = "viewport" content="width=device-width, initial-scale=1.0" /> 
+        <title>PRUEBA 1: 2 Marcadores</title>
 
-  <!-- Librerías -->
-  <script src="https://aframe.io/releases/1.4.2/aframe.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.4/dist/mindar-image-aframe.prod.js"></script>
+        <!-- Librerías para AR-->
+        <script src="https://cdn.jsdelivr.net/npm/aframe@1.4.2/dist/aframe.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.5/dist/mindar-image-aframe.prod.js"></script>
+        <!--Estilo visual (CSS)-->
+        <style>
+            body { margin: 0; overflow: hidden;}
+            #loading { 
+                position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
+                background: #000; color: white; display: flex; align-items: center; 
+                justify-content: center; font-size: 24px; z-index: 10;
+                }
+        </style>
 
-  <style>
-    html, body { margin: 0; height: 100%; overflow: hidden; background: #000; }
-    #hint {
-      position: absolute;
-      left: 8px; top: 8px;
-      z-index: 10; color: white;
-      font-family: Arial, sans-serif;
-      background: rgba(0,0,0,0.4);
-      padding: 6px 10px;
-      border-radius: 6px;
-    }
-  </style>
-</head>
-<body>
-  <div id="hint">Apunta la cámara a la imagen target (asegúrate de permitir cámara).</div>
+    </head>
+    <body>
+        <div id="loading">Cargando cámara...</div>
+        <a-scene
+            mindar-image="imageTargetSrc: ./targets.mind;"
+            color-space="sRGB"
+            embedded
+            renderer="colorManagement: true, physicallyCorrectLights"
+            vr-mode-ui="enabled: false"
+            device-orientation-permission-ui="enabled: false"
+            >
+            <a-camera position="0 0 0"></a-camera>
+        </a-scene> 
 
-  <a-scene
-    mindar-image="imageTargetSrc: ./targets.mind;"
-    color-space="sRGB"
-    embedded
-    vr-mode-ui="enabled: false"
-    device-orientation-permission-ui="enabled: false">
 
-    <!-- Luces -->
-    <a-entity light="type: ambient; intensity: 1"></a-entity>
-    <a-entity light="type: directional; intensity: 0.8" position="1 1 1"></a-entity>
 
-    <!-- Cámara -->
-    <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
+        <script src="main.js"></script>
+    </body>
 
-    <!-- Target -->
-    <a-entity id="marker" mindar-image-target="targetIndex: 0">
-      <a-box id="cube"
-             position="0 0 0"
-             scale="0.3 0.3 0.3"
-             material="color: orange; metalness: 0.2; roughness: 0.5"
-             rotation="0 0 0">
-      </a-box>
-      <a-text value="¡Hola AR!" position="0 0.5 0" align="center" color="#fff"></a-text>
-    </a-entity>
-  </a-scene>
-
-  <script>
-    const marker = document.querySelector('#marker');
-    const cube = document.querySelector('#cube');
-
-    marker.addEventListener('targetFound', () => {
-      console.log('Target encontrado');
-      document.getElementById('hint').textContent = 'Imagen detectada — ¡Cubo visible!';
-    });
-
-    marker.addEventListener('targetLost', () => {
-      console.log('Target perdido');
-      document.getElementById('hint').textContent = 'Apunta la cámara al target.';
-    });
-  </script>
-</body>
 </html>
