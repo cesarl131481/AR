@@ -1,88 +1,70 @@
 <!DOCTYPE html>
 <html lang="es">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>MindAR — Solicitar cámara</title>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Prueba MindAR GitHub</title>
 
-  <script src="https://cdn.jsdelivr.net/npm/aframe@1.5.0/dist/aframe.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.5/dist/mindar-image-aframe.prod.js"></script>
+    <!-- Librerías -->
+    <script src="https://cdn.jsdelivr.net/npm/aframe@1.5.0/dist/aframe.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.5/dist/mindar-image-aframe.prod.js"></script>
 
-  <style>
-    html, body {
-      margin: 0;
-      padding: 0;
-      width: 100%;
-      height: 100%;
-      background: black;
-      overflow: hidden;
-    }
-    #loading {
-      position: fixed;
-      inset: 0;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      color: white;
-      background: black;
-      z-index: 10;
-      font-size: 1.2em;
-    }
-  </style>
-</head>
-
-<body>
-  <div id="loading">Solicitando acceso a la cámara...</div>
-
-  <a-scene
-    id="scene"
-    mindar-image="imageTargetSrc: https://cdn.jsdelivr.net/gh/MindAR-js/examples@master/targets/targets.mind"
-    embedded
-    color-space="sRGB"
-    renderer="colorManagement: true; physicallyCorrectLights: true; alpha: true;"
-    vr-mode-ui="enabled: false"
-    device-orientation-permission-ui="enabled: false">
-    <a-camera position="0 0 0"></a-camera>
-
-    <a-entity mindar-image-target="targetIndex: 0">
-      <a-box position="0 0.1 0" color="tomato" scale="0.3 0.3 0.3"></a-box>
-      <a-text value="CUBO" position="0 0.6 0" align="center" color="#fff"></a-text>
-    </a-entity>
-  </a-scene>
-
-  <script>
-    const loading = document.getElementById("loading");
-    const scene = document.getElementById("scene");
-
-    // Paso 1: forzar la solicitud de cámara
-    async function solicitarCamara() {
-      try {
-        const stream = await navigator.mediaDevices.getUserMedia({ video: true });
-        console.log("✅ Permiso de cámara otorgado.");
-        // detiene el stream para liberar el dispositivo
-        stream.getTracks().forEach(track => track.stop());
-        iniciarMindAR();
-      } catch (err) {
-        console.error("❌ No se pudo acceder a la cámara:", err);
-        loading.textContent = "Permiso de cámara denegado o no disponible.";
+    <style>
+      html, body {
+        margin: 0;
+        padding: 0;
+        width: 100%;
+        height: 100%;
+        background: black;
+        overflow: hidden;
       }
-    }
+      #loading {
+        position: fixed;
+        inset: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background: black;
+        color: white;
+        z-index: 10;
+        font-size: 1.2em;
+      }
+    </style>
+  </head>
 
-    // Paso 2: iniciar MindAR normalmente
-    function iniciarMindAR() {
+  <body>
+    <div id="loading">Solicitando acceso a la cámara...</div>
+
+    <a-scene
+      mindar-image="imageTargetSrc: https://cdn.jsdelivr.net/gh/MindAR-js/examples@master/targets/targets.mind"
+      color-space="sRGB"
+      embedded
+      renderer="colorManagement: true; physicallyCorrectLights: true; alpha: true;"
+      vr-mode-ui="enabled: false"
+      device-orientation-permission-ui="enabled: false">
+
+      <a-camera position="0 0 0"></a-camera>
+
+      <a-entity mindar-image-target="targetIndex: 0">
+        <a-box color="tomato" position="0 0.1 0" scale="0.3 0.3 0.3"></a-box>
+        <a-text value="CUBO" position="0 0.6 0" align="center" color="#FFF"></a-text>
+      </a-entity>
+    </a-scene>
+
+    <script>
+      const scene = document.querySelector("a-scene");
+      const loading = document.getElementById("loading");
+
+      // Oculta el mensaje cuando MindAR está listo
       scene.addEventListener("arReady", () => {
         console.log("✅ MindAR inicializado correctamente.");
         loading.style.display = "none";
       });
 
-      scene.addEventListener("arError", (e) => {
-        console.error("❌ Error interno de MindAR:", e);
-        loading.textContent = "Error al inicializar MindAR.";
+      scene.addEventListener("arError", (err) => {
+        console.error("❌ Error de MindAR:", err);
+        loading.textContent = "Error al iniciar cámara o MindAR.";
       });
-    }
-
-    // Ejecutar solicitud inicial
-    solicitarCamara();
-  </script>
-</body>
+    </script>
+  </body>
 </html>
