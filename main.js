@@ -2,6 +2,10 @@ document.addEventListener("DOMContentLoaded", () => {
   const sceneEl = document.querySelector("a-scene");
   const loading = document.getElementById("loading");
 
+  sceneEl.addEventListener("loaded", () => {
+    loading.style.display = "none";
+  });
+
   const mindarSystem = sceneEl.systems["mindar-image-system"];
   const target0 = document.querySelector("#target0");
   const target1 = document.querySelector("#target1");
