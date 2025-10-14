@@ -1,60 +1,43 @@
 <!DOCTYPE html>
 <html lang="es">
-<head>
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Prueba 2</title>
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Robot AR - Presentación</title>
 
+    <!-- MindAR + AFrame -->
     <script src="https://aframe.io/releases/1.5.0/aframe.min.js"></script>
     <script src="https://cdn.jsdelivr.net/gh/donmccurdy/aframe-extras@v7.0.0/dist/aframe-extras.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.5/dist/mindar-image-aframe.prod.js"></script>
- 
- </head>
+  </head>
 
-<body>
-  <div id="loading">Solicitando acceso a la cámara...</div>
-  <!-- Escena MindAR (usa tu archivo .mind local en ./marcadores/targets.mind) -->
-  <a-scene
-    id="ar-scene"
-    mindar-image="imageTargetSrc: ./marcadores/targets.mind;"
-    vr-mode-ui="enabled: false"
-    device-orientation-permission-ui="enabled: false"
-  >
-    <!-- Cámara sincronizada -->
-    <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
+  <body>
+    <div id="loading">Cargando el robot...</div>
 
-    <!--Video-->
-    <a-assets>
-      <video id = "videoPlayer" src="3d/video.mp4" preload="auto" loop="true" crossorigin="anonymous"></video>
-    </a-assets>
+    <a-scene
+      mindar-image="imageTargetSrc: ./marcadores/targets.mind;"
+      vr-mode-ui="enabled: false"
+      device-orientation-permission-ui="enabled: true"
+    >
+      <!-- Cámara -->
+      <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
 
-    <!-- Target 0: ROBOT-->
-    <a-entity id="target0" mindar-image-target="targetIndex: 0">
-        <a-gltf-model 
-            id = "robot" 
-            src="3d/robot.glb"
-            scale="0.3 0.3 0.3"
-            position="0 -0.25 0"
-            animation-mixer></a-gltf-model>
-        <a-text id="label-robot" value="Robot" position="0 0.45 0" align = "center" color="#FFF"></a-text>
-    </a-entity>
+      <!-- Iluminación -->
+      <a-entity light="type: ambient; intensity: 1.2"></a-entity>
+      <a-entity light="type: directional; intensity: 1.5" position="1 1 1"></a-entity>
+      <a-entity light="type: hemisphere; intensity: 1.0" position="0 1 0"></a-entity>
 
-    <!-- Target 1: LUNA -->
-    <a-entity id="target1" mindar-image-target="targetIndex: 1">
-        <a-gltf-model
-            id = "luna"
-            src="3d/luna.glb"
-            scale="0.003 0.003 0.003"
-            position="0 -01 0"
-            animation-mixer></a-gltf-model>
-      <a-text id="label-luna" value="Luna" position="0 0.45 0" align = "center" color="#FFF"></a-text>
-    </a-entity>
+      <!-- Inicio -->
+       <a-entity id="inicio" mindar-image-target="targetIndex: 0"></a-entity>
+      
+      <!-- Primer marcador-->
+       <a-entity id="cambio" mindar-image-target="targetIndex: 1"></a-entity>
+      <!--Video-->
+      <a-entity id="video" mindar-image-target="targetIndex: 2"></a-entity>
 
-    <!--Target 2: VIDEO-->
-    <a-entity id="target2" mindar-image-target="targetIndex: 2">
-      <a-plane position="0 0 0" width="1.0" height="0.56" material="src: #videoPlayer; shader: flat;"></a-plane>
-    </a-entity>
 
-  </a-scene>
-  <script src="videoPlay.js"></script>
-</body>
+    </a-scene>
+  <script src="js/inicio.js"></script>
+  <script src="js/cambio.js"></script>
+  <script src="js/video.js"></script>
+  </body>
 </html>
